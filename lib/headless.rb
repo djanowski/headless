@@ -15,11 +15,11 @@ require 'headless/video/video_recorder'
 #   require 'rubygems'
 #   require 'headless'
 #   require 'selenium-webdriver'
-# 
+#
 #   Headless.ly do
 #     driver = Selenium::WebDriver.for :firefox
 #     driver.navigate.to 'http://google.com'
-#     puts driver.title 
+#     puts driver.title
 #   end
 #
 # Object mode:
@@ -33,7 +33,7 @@ require 'headless/video/video_recorder'
 #
 #   driver = Selenium::WebDriver.for :firefox
 #   driver.navigate.to 'http://google.com'
-#   puts driver.title 
+#   puts driver.title
 #
 #   headless.destroy
 #--
@@ -89,7 +89,7 @@ class Headless
   # Switches back from the headless server and terminates the headless session
   def destroy
     stop
-    CliUtil.kill_process(pid_filename)
+    CliUtil.kill_process(pid_filename, wait: true)
   end
 
   # Block syntax:
@@ -152,6 +152,9 @@ private
     #TODO error reporting
     result = system "#{CliUtil.path_to("Xvfb")} :#{display} -screen 0 #{dimensions} -ac >/dev/null 2>&1 &"
     raise Headless::Exception.new("Xvfb did not launch - something's wrong") unless result
+    until xvfb_running?
+      sleep 0.5
+    end
   end
 
   def xvfb_running?
@@ -165,7 +168,7 @@ private
   def read_xvfb_pid
     CliUtil.read_pid(pid_filename)
   end
-    
+
   def hook_at_exit
     unless @at_exit_hook_installed
       @at_exit_hook_installed = true
