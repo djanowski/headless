@@ -149,11 +149,14 @@ private
   end
 
   def launch_xvfb
-    #TODO error reporting
-    result = system "#{CliUtil.path_to("Xvfb")} :#{display} -screen 0 #{dimensions} -ac >/dev/null 2>&1 &"
-    raise Headless::Exception.new("Xvfb did not launch - something's wrong") unless result
-    until xvfb_running?
-      sleep 0.5
+    spawn("#{CliUtil.path_to("Xvfb")} :#{display} -screen 0 #{dimensions} -ac")
+
+    begin
+      Timeout.timeout(5) do
+        sleep 0.5 until xvfb_running?
+      end
+    rescue Timeout::Error
+      raise Headless::Exception.new("Xvfb did not launch - something's wrong")
     end
   end
 
