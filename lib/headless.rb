@@ -1,5 +1,5 @@
-require 'headless/cli_util'
-require 'headless/video/video_recorder'
+require_relative 'headless/cli_util'
+require_relative 'headless/video/video_recorder'
 
 # A class incapsulating the creation and usage of a headless X server
 #
