@@ -149,7 +149,7 @@ private
   end
 
   def launch_xvfb
-    spawn("#{CliUtil.path_to("Xvfb")} :#{display} -screen 0 #{dimensions} -ac")
+    spawn("#{CliUtil.path_to("Xvfb")} :#{display} -screen 0 #{dimensions} -ac 2>/dev/null")
 
     begin
       Timeout.timeout(5) do
